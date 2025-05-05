@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">adsLibrary</string>
+    <string name="test_ads_admob_app_open" translatable="false">ca-app-pub-3940256099942544/9257395921</string>
+    <string name="test_ads_admob_native_id" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="test_ads_admob_inter_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="test_ads_admob_inter_reward_id" translatable="false">ca-app-pub-3940256099942544/5354046379</string>
+    <string name="test_ads_admob_banner_id" translatable="false">ca-app-pub-3940256099942544/9214589741</string>
+    <string name="test_ads_admob_reward_id" translatable="false">ca-app-pub-3940256099942544/5224354917</string>
+    <string name="test_ads_admob_native_full_screen_id" translatable="false">ca-app-pub-3940256099942544/7342230711</string>
+
+    <string name="this_action_can_contain_ad">This action can contain ad</string>
+
+</resources>
