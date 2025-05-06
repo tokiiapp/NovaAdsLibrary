@@ -14,13 +14,13 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         AdmobUtil.initAdmob(this, 10000, true, true)
-        AppOpenManager.instance?.init(application, "appOpenId")
+        AppOpenManager.instance?.init(application, "")
         AppOpenManager.instance?.disableAppResumeWithActivity(MainActivity::class.java)
         AdmobUtil.loadInterHighFloor(this, AdsManager.adInter)
 
         AdmobUtil.loadNativeHighFloor(this, AdsManager.adNative)
 
-        AdmobUtil.loadAndShowAdSplash(this, "2", "", "", object : AppOpenSplashCallback {
+        AdmobUtil.loadAndShowAdSplash(this, "1", "", "", object : AppOpenSplashCallback {
             override fun onAdFail(error: String) {
                 onAdClosed()
             }
@@ -35,5 +35,9 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 }

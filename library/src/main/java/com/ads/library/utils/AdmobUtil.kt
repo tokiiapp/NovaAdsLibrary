@@ -293,6 +293,7 @@ object AdmobUtil {
                         container.gone()
                         runCatching { decorView?.removeView(container) }
                         onFinished()
+                        isAdShowing = false
                     }, 15000) //* Timeout 15s for loading NativeFull
 
                     showNativeHighFloor(activity, viewGroup, adNative, layout, object : NativeAdCallback {
@@ -336,6 +337,7 @@ object AdmobUtil {
                         container.gone()
                         runCatching { decorView?.removeView(container) }
                         onFinished()
+                        isAdShowing = false
                     }
 
                     showInterHighFloor(activity, adInter, enableLoadingDialog, object : InterCallBack {
@@ -1165,8 +1167,8 @@ object AdmobUtil {
     fun loadAndShowAdRewardWithCallback(
         activity: Activity,
         admobId: String?,
-        adCallback: RewardAdCallback,
-        enableLoadingDialog: Boolean
+        enableLoadingDialog: Boolean,
+        adCallback: RewardAdCallback
     ) {
         var admobId = admobId
         isAdShowing = false
@@ -1236,6 +1238,7 @@ object AdmobUtil {
                                     mRewardedAd = null
                                     isAdShowing = false
                                     adCallback.onAdClosed()
+                                    dismissAdDialog()
                                     if (AppOpenManager.instance?.isInitialized == true) {
                                         AppOpenManager.instance?.isAppResumeEnabled = true
                                     }
