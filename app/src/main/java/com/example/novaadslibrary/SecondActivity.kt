@@ -8,6 +8,7 @@ import com.ads.library.callback.NativeAdCallback
 import com.ads.library.callback.RewardAdCallback
 import com.ads.library.enumads.CollapsibleBanner
 import com.ads.library.utils.AdmobUtil
+import com.codemybrainsout.ratingdialog.RatingDialog
 import com.example.novaadslibrary.databinding.ActivitySecondBinding
 import com.google.android.gms.ads.AdValue
 
@@ -114,5 +115,25 @@ class SecondActivity : AppCompatActivity() {
             })
         }
 
+        binding.btnRate.setOnClickListener {
+        val ratingDialog = RatingDialog.Builder(this)
+            .session(1)
+            .date(1)
+            .setNameApp(getString(R.string.app_name))
+            .setEmail("Momcenter.contact@gmail.com")
+            .isShowButtonLater(true)
+            .isClickLaterDismiss(true)
+            .setOnlickRate {
+            }
+            .setTextButtonLater("Maybe later")
+            .setOnlickMaybeLate { }
+            .ratingButtonColor(com.ads.library.R.color.gnt_blue)
+            .build()
+
+        //Cancel On Touch Outside
+        ratingDialog.setCanceledOnTouchOutside(true)
+        //show
+        ratingDialog.show()
+        }
     }
 }

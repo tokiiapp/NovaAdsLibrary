@@ -57,7 +57,11 @@
                 android:layout_height="wrap_content"
                 android:text="load and show Reward" />
 
-
+            <Button
+                android:id="@+id/btnRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="show Rate" />
             <FrameLayout
                 android:id="@+id/flNative"
                 android:layout_width="match_parent"

@@ -50,6 +50,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(project(":library"))
+    implementation(project(":ratingdialog"))
     implementation ("com.google.android.gms:play-services-ads:23.1.0")
     implementation("androidx.compose.runtime:runtime:1.8.0")
 }

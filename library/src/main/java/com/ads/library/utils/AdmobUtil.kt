@@ -750,6 +750,7 @@ object AdmobUtil {
                     super.onAdFailedToShowFullScreenContent(adError)
                     isAdShowing = false
                     callBack.onAdFail(adError.message)
+                    handler.removeCallbacksAndMessages(null)
                 }
 
                 override fun onAdShowedFullScreenContent() {
