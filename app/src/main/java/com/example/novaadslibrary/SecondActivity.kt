@@ -18,22 +18,8 @@ class SecondActivity : AppCompatActivity() {
         binding = ActivitySecondBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnLoadShowBanner.setOnClickListener {
-            AdmobUtil.loadAndShowBanner(this,"", binding.flBanner, object : BannerCallBack {})
-        }
-
-        binding.btnLoadShowBannerCollap.setOnClickListener {
-            AdmobUtil.loadAndShowBannerCollapsible(this, "", CollapsibleBanner.BOTTOM, binding.flBanner, object : BannerCallBack {})
-
-        }
-
-        binding.btnLoadShowBannerCollapTop.setOnClickListener {
-            AdmobUtil.loadAndShowBannerCollapsible(this, "", CollapsibleBanner.TOP, binding.flBannerTop, object : BannerCallBack {})
-
-        }
-
-        binding.btnLoadShowNative.setOnClickListener {
-            AdmobUtil.showNativeHighFloor(this, binding.flNative, AdsManager.adNative, R.layout.ad_unified_medium, object : NativeAdCallback {
+        binding.btnShowNative.setOnClickListener {
+            AdmobUtil.showNativeHighFloorByRemoteConfig(this, "1",binding.flNative, AdsManager.adNative, R.layout.ad_unified_medium, object : NativeAdCallback {
                 override fun onNativeAdLoaded() {
 
                 }
@@ -105,7 +91,7 @@ class SecondActivity : AppCompatActivity() {
         }
         
         binding.btnLoadAndShowReward.setOnClickListener {
-            AdmobUtil.loadAndShowAdRewardWithCallback(this,"",true,object : RewardAdCallback{
+            AdmobUtil.loadAndShowAdRewardByRemoteConfig(this,"1","",true,object : RewardAdCallback{
                 override fun onAdClosed() {
 
                 }

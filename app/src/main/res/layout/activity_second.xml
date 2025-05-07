@@ -20,30 +20,12 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btnLoadShowBanner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="load and show Banner" />
 
             <Button
-                android:id="@+id/btnLoadShowBannerCollap"
+                android:id="@+id/btnShowNative"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="load and show Banner Collap" />
-
-            <Button
-                android:id="@+id/btnLoadShowBannerCollapTop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="load and show Banner Collap TOP" />
-
-
-            <Button
-                android:id="@+id/btnLoadShowNative"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="load and show Native" />
+                android:text="show Native" />
 
             <Button
                 android:id="@+id/btnLoadShowNativeCollap"

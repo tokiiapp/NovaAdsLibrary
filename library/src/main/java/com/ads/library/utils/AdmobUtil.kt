@@ -142,14 +142,57 @@ object AdmobUtil {
     }
 
     /**
+     * load and show Reward theo remote config
+     * @param remoteValue :
+     * - 0 : tăt
+     * - 1 : bật
+     */
+    @JvmStatic
+    fun loadAndShowAdRewardByRemoteConfig(
+        activity: Activity,
+        remoteValue: String,
+        admobId: String,
+        enableLoadingDialog: Boolean,
+        adCallback: RewardAdCallback
+    ) {
+        if (remoteValue == "0") {
+            adCallback.onAdFail("Tắt reward")
+        } else {
+            loadAndShowAdRewardWithCallback(activity, admobId, enableLoadingDialog, adCallback)
+        }
+    }
+
+    /**
+     * show Native theo remote config
+     * @param remoteValue :
+     * - 0 : tắt
+     * - 1 : bật
+     */
+    @JvmStatic
+    fun showNativeHighFloorByRemoteConfig(
+        activity: Activity,
+        remoteValue: String,
+        viewGroup: ViewGroup,
+        adNative: AdNative,
+        layout: Int,
+        nativeAdCallback: NativeAdCallback
+    ) {
+        if (remoteValue == "0") {
+            viewGroup.gone()
+        } else {
+            showNativeHighFloor(activity, viewGroup, adNative, layout, nativeAdCallback)
+        }
+    }
+
+    /**
      * Load Banner Thường, Banner Collap, Native thường, Native Collap dựa trên biến remote config
-     * @param remoteValue : Nếu remoteValue = 1 thì sẽ load Banner,
-     * nếu remoteValue = 2 thì sẽ load Banner Collap
-     * nếu remoteValue = 3 thì sẽ load Native Small, nếu layoutBanner = null thì sẽ load Native Medium
-     * nếu remoteValue = 4 thì sẽ load Native Collap
+     * @param remoteValue :
+     * - 1 : load Banner
+     * - 2 : load Banner Collap
+     * - 3 : load Native Small, nếu layoutBanner = null thì sẽ load Native Medium
+     * - 4 : load Native Collap
      *
-     * @param collapsibleBannersize: Chỉ định hướng của banner hoặc native colap
-     * Nếu là CollapsibleBanner.TOP thì sẽ là bên trên và ngược lại
+     * @param collapsibleBannersize: Chỉ định hướng của banner hoặc native colap. Nếu là CollapsibleBanner.TOP thì sẽ là bên trên và ngược lại
      *
      */
     @JvmStatic
@@ -793,7 +836,7 @@ object AdmobUtil {
 
     //showNativeHighFloor
     @JvmStatic
-    fun showNativeHighFloor(activity: Activity, viewGroup: ViewGroup, adNative: AdNative, layout: Int, nativeAdCallback: NativeAdCallback) {
+    private fun showNativeHighFloor(activity: Activity, viewGroup: ViewGroup, adNative: AdNative, layout: Int, nativeAdCallback: NativeAdCallback) {
         if (!isShowAds || !isNetworkConnected(activity)) {
             viewGroup.gone()
             return
@@ -826,7 +869,14 @@ object AdmobUtil {
     }
 
     @JvmStatic
-    fun loadAndShowNativeHighFloor(activity: Activity, viewGroup: ViewGroup, adNative: AdNative, size: GoogleENative, layout: Int, nativeAdCallback: NativeAdCallback) {
+    private fun loadAndShowNativeHighFloor(
+        activity: Activity,
+        viewGroup: ViewGroup,
+        adNative: AdNative,
+        size: GoogleENative,
+        layout: Int,
+        nativeAdCallback: NativeAdCallback
+    ) {
         if (!isShowAds || !isNetworkConnected(activity)) {
             adNative.status = StatusAd.AD_LOAD_FAIL
             viewGroup.gone()
@@ -841,7 +891,7 @@ object AdmobUtil {
         }
 
         adNative.status = StatusAd.AD_LOADING
-        adNative.nativeSize= size
+        adNative.nativeSize = size
         val tagView: View = if (size === GoogleENative.UNIFIED_MEDIUM) {
             activity.layoutInflater.inflate(R.layout.layoutnative_loading_medium, null, false)
         } else {
@@ -894,7 +944,7 @@ object AdmobUtil {
     }
 
     @JvmStatic
-    fun loadAndShowNativeCollap(
+    private fun loadAndShowNativeCollap(
         activity: Activity,
         viewGroup: ViewGroup,
         adNative: AdNative,
@@ -1033,7 +1083,7 @@ object AdmobUtil {
     }
 
     @JvmStatic
-    fun loadAndShowBanner(activity: Activity, bannerId: String, viewGroup: ViewGroup, bannerCallBack: BannerCallBack) {
+    private fun loadAndShowBanner(activity: Activity, bannerId: String, viewGroup: ViewGroup, bannerCallBack: BannerCallBack) {
         if (!isShowAds || !isNetworkConnected(activity)) {
             viewGroup.visibility = View.GONE
             bannerCallBack.onFailed("No internet")
@@ -1088,7 +1138,13 @@ object AdmobUtil {
     }
 
     @JvmStatic
-    fun loadAndShowBannerCollapsible(activity: Activity, bannerId: String, collapsibleBannersize: CollapsibleBanner, viewGroup: ViewGroup, callback: BannerCallBack) {
+    private fun loadAndShowBannerCollapsible(
+        activity: Activity,
+        bannerId: String,
+        collapsibleBannersize: CollapsibleBanner,
+        viewGroup: ViewGroup,
+        callback: BannerCallBack
+    ) {
         var bannerId1 = bannerId
         if (!isShowAds || !isNetworkConnected(activity)) {
             viewGroup.visibility = View.GONE
@@ -1164,9 +1220,9 @@ object AdmobUtil {
 
 
     @JvmStatic
-    fun loadAndShowAdRewardWithCallback(
+    private fun loadAndShowAdRewardWithCallback(
         activity: Activity,
-        admobId: String?,
+        admobId: String,
         enableLoadingDialog: Boolean,
         adCallback: RewardAdCallback
     ) {
