@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 30
-namespace 'com.codemybrainsout.ratingdialog'
+    compileSdkVersion 35
+    namespace 'com.codemybrainsout.ratingdialog'
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 35
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
