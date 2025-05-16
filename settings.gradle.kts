@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 rootProject.name = "NovaAdsLibrary"
 include(":app")
 include(":library")
-include(":ratingdialog")
+include(":ratedialog")

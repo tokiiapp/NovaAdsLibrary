@@ -8,9 +8,9 @@ import com.ads.library.callback.NativeAdCallback
 import com.ads.library.callback.RewardAdCallback
 import com.ads.library.enumads.CollapsibleBanner
 import com.ads.library.utils.AdmobUtil
-import com.codemybrainsout.ratingdialog.RatingDialog
 import com.example.novaadslibrary.databinding.ActivitySecondBinding
 import com.google.android.gms.ads.AdValue
+import com.rate.ratedialog.RatingDialog
 
 class SecondActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySecondBinding
@@ -119,6 +119,7 @@ class SecondActivity : AppCompatActivity() {
         val ratingDialog = RatingDialog.Builder(this)
             .session(1)
             .date(1)
+            .setIcon(R.mipmap.ic_launcher)
             .setNameApp(getString(R.string.app_name))
             .setEmail("Momcenter.contact@gmail.com")
             .isShowButtonLater(true)
