@@ -82,7 +82,9 @@ object AdmobUtil {
     var mRewardedAd: RewardedAd? = null
 
     var shimmerFrameLayout: ShimmerFrameLayout? = null
-
+    @JvmField
+    var mBannerCollapView: AdView? = null
+    
     fun getAdRequest(): AdRequest {
         return AdRequest.Builder()
             .setHttpTimeoutMillis(timeOut)
@@ -209,6 +211,9 @@ object AdmobUtil {
         bannerCallBack: BannerCallBack
     ) {
         when (remoteValue) {
+            "0" -> {
+                viewGroup.gone()
+            }
             "1" -> {//* Banner
                 loadAndShowBanner(activity, bannerId, viewGroup, bannerCallBack)
             }
@@ -307,6 +312,7 @@ object AdmobUtil {
                 }
 
                 "2" -> {
+                    destroyBannerCollapView()
                     val container = activity.layoutInflater.inflate(R.layout.ad_native_inter_container, null, false)
                     val viewGroup = container.findViewById<FrameLayout>(R.id.viewGroup)
                     val btnClose = container.findViewById<View>(R.id.ad_close)
@@ -360,6 +366,7 @@ object AdmobUtil {
                 }
 
                 "3" -> {
+                    destroyBannerCollapView()
                     val container = activity.layoutInflater.inflate(R.layout.ad_native_inter_container, null, false)
                     val viewGroup = container.findViewById<FrameLayout>(R.id.viewGroup)
                     val btnClose = container.findViewById<View>(R.id.ad_close)
@@ -1205,6 +1212,7 @@ object AdmobUtil {
             mAdView.loadAd(adRequest2)
         }
         Log.e(" Admod", "loadAdBanner")
+        mBannerCollapView = mAdView
     }
 
     private fun getAdSize(context: Activity): AdSize {
@@ -1336,5 +1344,14 @@ object AdmobUtil {
             return nativeView != null && nativeView.isVisible
         }
         return false
+    }
+
+    private fun destroyBannerCollapView() {
+        runCatching {
+            mBannerCollapView?.destroy()
+            (mBannerCollapView?.parent as? ViewGroup)?.removeView(mBannerCollapView)
+        }.onFailure {
+
+        }
     }
 }

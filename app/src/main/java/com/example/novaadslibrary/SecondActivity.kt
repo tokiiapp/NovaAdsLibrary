@@ -1,6 +1,7 @@
 package com.example.novaadslibrary
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.ads.library.callback.BannerCallBack
 import com.ads.library.callback.InterCallBack
@@ -38,7 +39,7 @@ class SecondActivity : AppCompatActivity() {
 
         binding.btnLoadShowNativeCollap.setOnClickListener {
             AdmobUtil.loadAndShowBannerByRemoteConfig(
-                this, "", AdsManager.adNative, "4", binding.flBanner, CollapsibleBanner.BOTTOM, R.layout.ad_template_collap,
+                this, "", AdsManager.adNative, "2", binding.flBanner, CollapsibleBanner.BOTTOM, R.layout.ad_template_collap,
                 R.layout.ad_template_banner, object : NativeAdCallback {}, object : BannerCallBack {})
         }
 
@@ -83,7 +84,7 @@ class SecondActivity : AppCompatActivity() {
                 this,
                 AdsManager.adInter,
                 AdsManager.adNative,
-                remoteInter = "3",
+                remoteInter = "2",
                 remoteCount = "1",
                 R.layout.ad_template_fullscreen, true
             ) {
@@ -136,5 +137,15 @@ class SecondActivity : AppCompatActivity() {
         //show
         ratingDialog.show()
         }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
 }
