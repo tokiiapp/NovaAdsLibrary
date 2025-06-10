@@ -5,14 +5,17 @@ import com.google.android.gms.ads.nativead.NativeAd;
 
 public class AdNative {
     private String idNativeHighFloor;
+    private String idNativeMedium;
     private String idNative;
     protected StatusAd status = StatusAd.AD_INIT;
     private NativeAd nativeAdHighFloor;
+    private NativeAd nativeAdMedium;
     private NativeAd nativeAd;
     private GoogleENative nativeSize = GoogleENative.UNIFIED_MEDIUM;
 
-    public AdNative(String idNativeHighFloor, String idNative) {
+    public AdNative(String idNativeHighFloor, String idNativeMedium, String idNative) {
         this.idNativeHighFloor = idNativeHighFloor;
+        this.idNativeMedium = idNativeMedium;
         this.idNative = idNative;
     }
 
@@ -62,5 +65,21 @@ public class AdNative {
 
     public void setIdNative(String idNative) {
         this.idNative = idNative;
+    }
+
+    public String getIdNativeMedium() {
+        return idNativeMedium;
+    }
+
+    public void setIdNativeMedium(String idNativeMedium) {
+        this.idNativeMedium = idNativeMedium;
+    }
+
+    public NativeAd getNativeAdMedium() {
+        return nativeAdMedium;
+    }
+
+    public void setNativeAdMedium(NativeAd nativeAdMedium) {
+        this.nativeAdMedium = nativeAdMedium;
     }
 }

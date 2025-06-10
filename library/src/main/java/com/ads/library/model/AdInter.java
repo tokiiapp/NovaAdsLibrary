@@ -5,14 +5,17 @@ import com.google.android.gms.ads.interstitial.InterstitialAd;
 public class AdInter {
 
     private String idInterHighFloor;
+    private String idInterMedium;
     private String idInter;
     protected StatusAd status = StatusAd.AD_INIT;
     private InterstitialAd interstitialAdHighFloor;
+    private InterstitialAd interstitialAdMedium;
     private InterstitialAd interstitialAd;
     private int countInter = 0;
 
-    public AdInter(String idInterHighFloor, String idInter) {
+    public AdInter(String idInterHighFloor, String idInterMedium, String idInter) {
         this.idInterHighFloor = idInterHighFloor;
+        this.idInterMedium = idInterMedium;
         this.idInter = idInter;
     }
 
@@ -20,6 +23,7 @@ public class AdInter {
         this.interstitialAdHighFloor = interstitialAd;
         status = StatusAd.AD_LOADED;
     }
+
     public void setInterstitialAd(InterstitialAd interstitialAd) {
         this.interstitialAd = interstitialAd;
         status = StatusAd.AD_LOADED;
@@ -41,7 +45,7 @@ public class AdInter {
         this.status = status;
     }
 
-    public boolean isReady(){
+    public boolean isReady() {
         return interstitialAd != null;
     }
 
@@ -61,11 +65,27 @@ public class AdInter {
         this.idInterHighFloor = idInterHighFloor;
     }
 
+    public InterstitialAd getInterstitialAdMedium() {
+        return interstitialAdMedium;
+    }
+
+    public void setInterstitialAdMedium(InterstitialAd interstitialAdMedium) {
+        this.interstitialAdMedium = interstitialAdMedium;
+    }
+
     public String getIdInter() {
         return idInter;
     }
 
     public void setIdInter(String idInter) {
         this.idInter = idInter;
+    }
+
+    public String getIdInterMedium() {
+        return idInterMedium;
+    }
+
+    public void setIdInterMedium(String idInterMedium) {
+        this.idInterMedium = idInterMedium;
     }
 }

@@ -31,6 +31,7 @@ import com.ads.library.callback.RewardAdCallback
 import com.ads.library.R
 import com.ads.library.enumads.CollapsibleBanner
 import com.ads.library.enumads.GoogleENative
+import com.ads.library.model.AdAoaSplash
 import com.ads.library.model.AdInter
 import com.ads.library.model.AdNative
 import com.ads.library.model.StatusAd
@@ -82,9 +83,10 @@ object AdmobUtil {
     var mRewardedAd: RewardedAd? = null
 
     var shimmerFrameLayout: ShimmerFrameLayout? = null
+
     @JvmField
     var mBannerCollapView: AdView? = null
-    
+
     fun getAdRequest(): AdRequest {
         return AdRequest.Builder()
             .setHttpTimeoutMillis(timeOut)
@@ -214,6 +216,7 @@ object AdmobUtil {
             "0" -> {
                 viewGroup.gone()
             }
+
             "1" -> {//* Banner
                 loadAndShowBanner(activity, bannerId, viewGroup, bannerCallBack)
             }
@@ -483,7 +486,7 @@ object AdmobUtil {
      * - 2 : show Inter
      */
     @JvmStatic
-    fun loadAndShowAdSplash(activity: Activity, remoteValue: String, idAoa: String, idInter: String, callBack: AppOpenSplashCallback) {
+    fun loadAndShowAdSplash(activity: Activity, remoteValue: String, adAoaSplash: AdAoaSplash, adInter: AdInter, callBack: AppOpenSplashCallback) {
         if (!isShowAds || !isNetworkConnected(activity)) {
             callBack.onAdFail("No internet")
             return
@@ -494,7 +497,7 @@ object AdmobUtil {
             }
 
             "1" -> {
-                loadAndShowAppOpenSplash(activity, idAoa, object : AppOpenSplashCallback {
+                loadAndShowAppOpenSplashMulti(activity, adAoaSplash, object : AppOpenSplashCallback {
                     override fun onAdFail(error: String) {
                         callBack.onAdFail(error)
                     }
@@ -510,7 +513,7 @@ object AdmobUtil {
             }
 
             "2" -> {
-                loadAndShowAdInterstitial(activity, idInter, object : InterCallBack {
+                loadAndShowAdInterstitialMulti(activity, adInter, object : InterCallBack {
                     override fun onStartAction() {
 
                     }
@@ -545,13 +548,17 @@ object AdmobUtil {
     }
 
     @JvmStatic
-    fun loadAndShowAppOpenSplash(activity: Activity, appOpenId: String, appOpenSplashCallback: AppOpenSplashCallback) {
+    fun loadAndShowAppOpenSplashMulti(
+        activity: Activity,
+        adAoaSplash: AdAoaSplash,
+        appOpenSplashCallback: AppOpenSplashCallback
+    ) {
         var appResumeAdId = ""
 
         appResumeAdId = if (isTesting) {
             activity.getString(R.string.test_ads_admob_app_open)
         } else {
-            appOpenId
+            adAoaSplash.idAoaHighFloor
         }
         if (!isShowAds || !isNetworkConnected(activity)) {
             appOpenSplashCallback.onAdFail("No internet")
@@ -559,11 +566,6 @@ object AdmobUtil {
         }
 
         AppOpenAd.load(activity, appResumeAdId, getAdRequest(), object : AppOpenAd.AppOpenAdLoadCallback() {
-            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                super.onAdFailedToLoad(loadAdError)
-                appOpenSplashCallback.onAdFail(loadAdError.message)
-            }
-
             override fun onAdLoaded(appOpenAd: AppOpenAd) {
                 super.onAdLoaded(appOpenAd)
                 appOpenAd.show(activity)
@@ -590,6 +592,315 @@ object AdmobUtil {
                         super.onAdShowedFullScreenContent()
                     }
                 }
+            }
+
+            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                super.onAdFailedToLoad(loadAdError)
+                AppOpenAd.load(activity, adAoaSplash.idAoaMedium, getAdRequest(), object : AppOpenAd.AppOpenAdLoadCallback() {
+                    override fun onAdLoaded(appOpenAd: AppOpenAd) {
+                        super.onAdLoaded(appOpenAd)
+                        appOpenAd.show(activity)
+                        appOpenAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+                            override fun onAdClicked() {
+                                super.onAdClicked()
+                            }
+
+                            override fun onAdDismissedFullScreenContent() {
+                                super.onAdDismissedFullScreenContent()
+                                appOpenSplashCallback.onAdClosed()
+                            }
+
+                            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                                super.onAdFailedToShowFullScreenContent(adError)
+                                appOpenSplashCallback.onAdFail(adError.message)
+                            }
+
+                            override fun onAdImpression() {
+                                super.onAdImpression()
+                            }
+
+                            override fun onAdShowedFullScreenContent() {
+                                super.onAdShowedFullScreenContent()
+                            }
+                        }
+                    }
+
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        super.onAdFailedToLoad(loadAdError)
+                        AppOpenAd.load(activity, adAoaSplash.idAoa, getAdRequest(), object : AppOpenAd.AppOpenAdLoadCallback() {
+                            override fun onAdLoaded(appOpenAd: AppOpenAd) {
+                                super.onAdLoaded(appOpenAd)
+                                appOpenAd.show(activity)
+                                appOpenAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+                                    override fun onAdClicked() {
+                                        super.onAdClicked()
+                                    }
+
+                                    override fun onAdDismissedFullScreenContent() {
+                                        super.onAdDismissedFullScreenContent()
+                                        appOpenSplashCallback.onAdClosed()
+                                    }
+
+                                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                                        super.onAdFailedToShowFullScreenContent(adError)
+                                        appOpenSplashCallback.onAdFail(adError.message)
+                                    }
+
+                                    override fun onAdImpression() {
+                                        super.onAdImpression()
+                                    }
+
+                                    override fun onAdShowedFullScreenContent() {
+                                        super.onAdShowedFullScreenContent()
+                                    }
+                                }
+                            }
+
+                            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                                super.onAdFailedToLoad(loadAdError)
+                                appOpenSplashCallback.onAdFail(loadAdError.message)
+                            }
+
+                        })
+
+                    }
+
+                })
+
+            }
+
+        })
+
+    }
+
+    @JvmStatic
+    fun loadAndShowAppOpenSplash(activity: Activity, appOpenId: String, appOpenSplashCallback: AppOpenSplashCallback) {
+        var appResumeAdId = ""
+
+        appResumeAdId = if (isTesting) {
+            activity.getString(R.string.test_ads_admob_app_open)
+        } else {
+            appOpenId
+        }
+        if (!isShowAds || !isNetworkConnected(activity)) {
+            appOpenSplashCallback.onAdFail("No internet")
+            return
+        }
+
+        AppOpenAd.load(activity, appResumeAdId, getAdRequest(), object : AppOpenAd.AppOpenAdLoadCallback() {
+            override fun onAdLoaded(appOpenAd: AppOpenAd) {
+                super.onAdLoaded(appOpenAd)
+                appOpenAd.show(activity)
+                appOpenAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+                    override fun onAdClicked() {
+                        super.onAdClicked()
+                    }
+
+                    override fun onAdDismissedFullScreenContent() {
+                        super.onAdDismissedFullScreenContent()
+                        appOpenSplashCallback.onAdClosed()
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                        super.onAdFailedToShowFullScreenContent(adError)
+                        appOpenSplashCallback.onAdFail(adError.message)
+                    }
+
+                    override fun onAdImpression() {
+                        super.onAdImpression()
+                    }
+
+                    override fun onAdShowedFullScreenContent() {
+                        super.onAdShowedFullScreenContent()
+                    }
+                }
+            }
+
+            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                super.onAdFailedToLoad(loadAdError)
+                appOpenSplashCallback.onAdFail(loadAdError.message)
+            }
+
+        })
+
+    }
+
+    @JvmStatic
+    fun loadAndShowAdInterstitialMulti(activity: Activity, adInter: AdInter, adsInterCallBack: InterCallBack, enableLoadingDialog: Boolean) {
+        isAdShowing = false
+
+        if (!isShowAds || !isNetworkConnected(activity)) {
+            adsInterCallBack.onAdFail("No internet")
+            return
+        }
+        var id = adInter.idInterHighFloor
+        if (isTesting) {
+            id = activity.getString(R.string.test_ads_admob_inter_id)
+        }
+        if (enableLoadingDialog) {
+            dialogLoading(activity)
+        }
+
+        InterstitialAd.load(activity, id, getAdRequest(), object : InterstitialAdLoadCallback() {
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                super.onAdLoaded(interstitialAd)
+                adsInterCallBack.onAdLoaded()
+                interstitialAd.onPaidEventListener = OnPaidEventListener { adValue: AdValue? -> adsInterCallBack.onPaid(adValue) }
+                interstitialAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+                    override fun onAdDismissedFullScreenContent() {
+                        super.onAdDismissedFullScreenContent()
+                        isAdShowing = false
+                        lastTimeShowInterstitial = Date().time
+                        adsInterCallBack.onEventClickAdClosed()
+                        dismissAdDialog()
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                        super.onAdFailedToShowFullScreenContent(adError)
+                        isAdShowing = false
+
+                        adsInterCallBack.onAdFail(adError.message)
+                    }
+
+                    override fun onAdShowedFullScreenContent() {
+                        super.onAdShowedFullScreenContent()
+                        isAdShowing = true
+                        adsInterCallBack.onAdShowed()
+                        try {
+                            interstitialAd.setOnPaidEventListener(adsInterCallBack::onPaid)
+                        } catch (e: Exception) {
+                        }
+                        dismissAdDialog()
+
+                    }
+                }
+                if (ProcessLifecycleOwner.get().lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        isAdShowing = true
+                        adsInterCallBack.onStartAction()
+                        interstitialAd.setOnPaidEventListener(adsInterCallBack::onPaid)
+                        interstitialAd.show(activity)
+                    }, 400)
+
+                } else {
+                    isAdShowing = false
+                    dismissAdDialog()
+                    adsInterCallBack.onAdFail("onResume")
+                }
+
+            }
+
+            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                super.onAdFailedToLoad(loadAdError)
+                InterstitialAd.load(activity, adInter.idInterMedium, getAdRequest(), object : InterstitialAdLoadCallback() {
+                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                        super.onAdLoaded(interstitialAd)
+                        adsInterCallBack.onAdLoaded()
+                        interstitialAd.onPaidEventListener = OnPaidEventListener { adValue: AdValue? -> adsInterCallBack.onPaid(adValue) }
+                        interstitialAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+                            override fun onAdDismissedFullScreenContent() {
+                                super.onAdDismissedFullScreenContent()
+                                isAdShowing = false
+                                lastTimeShowInterstitial = Date().time
+                                adsInterCallBack.onEventClickAdClosed()
+                                dismissAdDialog()
+                            }
+
+                            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                                super.onAdFailedToShowFullScreenContent(adError)
+                                isAdShowing = false
+
+                                adsInterCallBack.onAdFail(adError.message)
+                            }
+
+                            override fun onAdShowedFullScreenContent() {
+                                super.onAdShowedFullScreenContent()
+                                isAdShowing = true
+                                adsInterCallBack.onAdShowed()
+                                try {
+                                    interstitialAd.setOnPaidEventListener(adsInterCallBack::onPaid)
+                                } catch (e: Exception) {
+                                }
+                                dismissAdDialog()
+
+                            }
+                        }
+                        if (ProcessLifecycleOwner.get().lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                isAdShowing = true
+                                adsInterCallBack.onStartAction()
+                                interstitialAd.setOnPaidEventListener(adsInterCallBack::onPaid)
+                                interstitialAd.show(activity)
+                            }, 400)
+
+                        } else {
+                            isAdShowing = false
+                            dismissAdDialog()
+                            adsInterCallBack.onAdFail("onResume")
+                        }
+
+                    }
+
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        super.onAdFailedToLoad(loadAdError)
+                        InterstitialAd.load(activity, adInter.idInter, getAdRequest(), object : InterstitialAdLoadCallback() {
+                            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                                super.onAdLoaded(interstitialAd)
+                                adsInterCallBack.onAdLoaded()
+                                interstitialAd.onPaidEventListener = OnPaidEventListener { adValue: AdValue? -> adsInterCallBack.onPaid(adValue) }
+                                interstitialAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+                                    override fun onAdDismissedFullScreenContent() {
+                                        super.onAdDismissedFullScreenContent()
+                                        isAdShowing = false
+                                        lastTimeShowInterstitial = Date().time
+                                        adsInterCallBack.onEventClickAdClosed()
+                                        dismissAdDialog()
+                                    }
+
+                                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                                        super.onAdFailedToShowFullScreenContent(adError)
+                                        isAdShowing = false
+
+                                        adsInterCallBack.onAdFail(adError.message)
+                                    }
+
+                                    override fun onAdShowedFullScreenContent() {
+                                        super.onAdShowedFullScreenContent()
+                                        isAdShowing = true
+                                        adsInterCallBack.onAdShowed()
+                                        try {
+                                            interstitialAd.setOnPaidEventListener(adsInterCallBack::onPaid)
+                                        } catch (e: Exception) {
+                                        }
+                                        dismissAdDialog()
+
+                                    }
+                                }
+                                if (ProcessLifecycleOwner.get().lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        isAdShowing = true
+                                        adsInterCallBack.onStartAction()
+                                        interstitialAd.setOnPaidEventListener(adsInterCallBack::onPaid)
+                                        interstitialAd.show(activity)
+                                    }, 400)
+
+                                } else {
+                                    isAdShowing = false
+                                    dismissAdDialog()
+                                    adsInterCallBack.onAdFail("onResume")
+                                }
+
+                            }
+
+                            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                                super.onAdFailedToLoad(loadAdError)
+                                isAdShowing = false
+                                adsInterCallBack.onAdFail(loadAdError.message)
+                                dismissAdDialog()
+                            }
+                        })
+                    }
+                })
             }
         })
 
@@ -677,10 +988,8 @@ object AdmobUtil {
             return
         }
         var mIdHighFloor = adInter.idInterHighFloor
-        var mIdInter = adInter.idInter
         if (isTesting) {
             mIdHighFloor = context.getString(R.string.test_ads_admob_inter_id)
-            mIdInter = context.getString(R.string.test_ads_admob_inter_id)
         }
         adInter.status = StatusAd.AD_LOADING
         InterstitialAd.load(context, mIdHighFloor, getAdRequest(), object : InterstitialAdLoadCallback() {
@@ -694,16 +1003,29 @@ object AdmobUtil {
                 super.onAdFailedToLoad(p0)
                 adInter.status = StatusAd.AD_LOADING
 
-                InterstitialAd.load(context, mIdInter, getAdRequest(), object : InterstitialAdLoadCallback() {
+                InterstitialAd.load(context, adInter.idInterMedium, getAdRequest(), object : InterstitialAdLoadCallback() {
                     override fun onAdLoaded(interstitialAd: InterstitialAd) {
                         super.onAdLoaded(interstitialAd)
-                        adInter.interstitialAd = interstitialAd
+                        adInter.interstitialAdMedium = interstitialAd
                         adInter.status = StatusAd.AD_LOADED
                     }
 
                     override fun onAdFailedToLoad(p0: LoadAdError) {
                         super.onAdFailedToLoad(p0)
-                        adInter.status = StatusAd.AD_LOAD_FAIL
+                        adInter.status = StatusAd.AD_LOADING
+
+                        InterstitialAd.load(context, adInter.idInter, getAdRequest(), object : InterstitialAdLoadCallback() {
+                            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                                super.onAdLoaded(interstitialAd)
+                                adInter.interstitialAd = interstitialAd
+                                adInter.status = StatusAd.AD_LOADED
+                            }
+
+                            override fun onAdFailedToLoad(p0: LoadAdError) {
+                                super.onAdFailedToLoad(p0)
+                                adInter.status = StatusAd.AD_LOAD_FAIL
+                            }
+                        })
                     }
                 })
 
@@ -733,10 +1055,8 @@ object AdmobUtil {
         handler.postDelayed(runnable, 10000)
 
         var interstitialAd = adInter.interstitialAdHighFloor
-        if (interstitialAd == null) {
-            interstitialAd = adInter.interstitialAd
-        }
-
+            ?: adInter.interstitialAdMedium
+            ?: adInter.interstitialAd
         if (interstitialAd != null) {
             if (enableLoadingDialog) {
                 dialogLoading(activity)
@@ -803,10 +1123,8 @@ object AdmobUtil {
             return
         }
         var mIdNativeHighFloor = adNative.idNativeHighFloor
-        var mIdNative = adNative.idNative
         if (isTesting) {
             mIdNativeHighFloor = context.getString(R.string.test_ads_admob_native_id)
-            mIdNative = context.getString(R.string.test_ads_admob_native_id)
         }
         adNative.status = StatusAd.AD_LOADING
         val adLoaderHighFloor: AdLoader = AdLoader.Builder(context, mIdNativeHighFloor).forNativeAd {
@@ -817,13 +1135,26 @@ object AdmobUtil {
                 super.onAdFailedToLoad(adError)
 
                 CoroutineScope(Dispatchers.IO).launch {
-                    val adLoader: AdLoader = AdLoader.Builder(context, mIdNative).forNativeAd {
-                        adNative.nativeAd = it
+                    val adLoader: AdLoader = AdLoader.Builder(context, adNative.idNativeMedium).forNativeAd {
+                        adNative.nativeAdMedium = it
                         adNative.status = StatusAd.AD_LOADED
                     }.withAdListener(object : AdListener() {
                         override fun onAdFailedToLoad(adError: LoadAdError) {
                             super.onAdFailedToLoad(adError)
-                            adNative.status = StatusAd.AD_LOAD_FAIL
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val adLoader: AdLoader = AdLoader.Builder(context, adNative.idNative).forNativeAd {
+                                    adNative.nativeAd = it
+                                    adNative.status = StatusAd.AD_LOADED
+                                }.withAdListener(object : AdListener() {
+                                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                                        super.onAdFailedToLoad(adError)
+                                        adNative.status = StatusAd.AD_LOAD_FAIL
+                                    }
+                                }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
+                                runCatching {
+                                    adLoader.loadAd(getAdRequest())
+                                }
+                            }
                         }
                     }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
                     runCatching {
@@ -854,9 +1185,8 @@ object AdmobUtil {
         }
 
         var nativeAd = adNative.nativeAdHighFloor
-        if (nativeAd == null) {
-            nativeAd = adNative.nativeAd
-        }
+            ?: adNative.nativeAdMedium
+            ?: adNative.nativeAd
 
         if (nativeAd != null) {
             val adView = activity.layoutInflater.inflate(layout, null) as NativeAdView
