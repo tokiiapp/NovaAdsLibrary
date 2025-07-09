@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         AdmobUtil.loadNativeHighFloor(this, AdsManager.adNative)
 
-        AdmobUtil.loadAndShowAdSplash(this, "1", AdsManager.aoaSplash, AdsManager.adInterSplash, object : AppOpenSplashCallback {
+        AdmobUtil.loadAndShowAdSplash(this, "2", AdsManager.aoaSplash, AdsManager.adInterSplash, object : AppOpenSplashCallback {
             override fun onAdFail(error: String) {
                 onAdClosed()
             }

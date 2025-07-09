@@ -146,8 +146,7 @@ class AppOpenManager : Application.ActivityLifecycleCallbacks, LifecycleObserver
         if (myApplication != null && appResumeAdId != null && adRequest != null && loadCallback != null) {
 
             AppOpenAd.load(
-                myApplication!!, appResumeAdId!!, adRequest!!,
-                AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback!!
+                myApplication!!, appResumeAdId!!, adRequest!!, loadCallback!!
             )
         }
     }
