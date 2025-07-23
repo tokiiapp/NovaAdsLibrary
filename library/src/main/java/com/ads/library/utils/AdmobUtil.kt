@@ -430,7 +430,7 @@ object AdmobUtil {
                         }
 
                         override fun onAdFail(error: String) {
-                            onFinished()
+                            onEventClickAdClosed()
                         }
 
                         override fun onPaid(adValue: AdValue?) {
@@ -1067,7 +1067,6 @@ object AdmobUtil {
                     dismissAdDialog()
                     adInter.interstitialAdHighFloor = null
                     adInter.interstitialAd = null
-                    loadInterHighFloor(activity, adInter)
                 }
 
                 override fun onAdFailedToShowFullScreenContent(adError: AdError) {
@@ -1191,7 +1190,6 @@ object AdmobUtil {
 
             adNative.nativeAdHighFloor = null
             adNative.nativeAd = null
-            loadNativeHighFloor(activity, adNative)
         } else {
             nativeAdCallback.onAdFail("No ad")
         }

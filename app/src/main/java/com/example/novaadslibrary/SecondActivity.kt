@@ -1,5 +1,6 @@
 package com.example.novaadslibrary
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -57,7 +58,7 @@ class SecondActivity : AppCompatActivity() {
                 }
 
                 override fun onEventClickAdClosed() {
-
+                    AdmobUtil.loadInterHighFloor(this@SecondActivity, AdsManager.adInter)
                 }
 
                 override fun onAdShowed() {
@@ -84,11 +85,14 @@ class SecondActivity : AppCompatActivity() {
                 this,
                 AdsManager.adInter,
                 AdsManager.adNative,
-                remoteInter = "2",
+                remoteInter = "3",
                 remoteCount = "1",
                 R.layout.ad_template_fullscreen, true
             ) {
+                AdmobUtil.loadInterHighFloor(this@SecondActivity, AdsManager.adInter)
 
+                AdmobUtil.loadNativeHighFloor(this@SecondActivity, AdsManager.adNative)
+                startActivity(Intent(this, ThirdActivity::class.java))
             }
         }
         
