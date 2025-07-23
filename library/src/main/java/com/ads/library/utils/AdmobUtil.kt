@@ -23,12 +23,12 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.ads.library.R
 import com.ads.library.callback.AppOpenSplashCallback
 import com.ads.library.callback.BannerCallBack
 import com.ads.library.callback.InterCallBack
 import com.ads.library.callback.NativeAdCallback
 import com.ads.library.callback.RewardAdCallback
-import com.ads.library.R
 import com.ads.library.enumads.CollapsibleBanner
 import com.ads.library.enumads.GoogleENative
 import com.ads.library.model.AdAoaSplash
@@ -58,9 +58,6 @@ import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.Date
 
 object AdmobUtil {
@@ -1134,41 +1131,36 @@ object AdmobUtil {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 super.onAdFailedToLoad(adError)
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    val adLoader: AdLoader = AdLoader.Builder(context, adNative.idNativeMedium).forNativeAd {
-                        adNative.nativeAdMedium = it
-                        adNative.status = StatusAd.AD_LOADED
-                    }.withAdListener(object : AdListener() {
-                        override fun onAdFailedToLoad(adError: LoadAdError) {
-                            super.onAdFailedToLoad(adError)
-                            CoroutineScope(Dispatchers.IO).launch {
-                                val adLoader: AdLoader = AdLoader.Builder(context, adNative.idNative).forNativeAd {
-                                    adNative.nativeAd = it
-                                    adNative.status = StatusAd.AD_LOADED
-                                }.withAdListener(object : AdListener() {
-                                    override fun onAdFailedToLoad(adError: LoadAdError) {
-                                        super.onAdFailedToLoad(adError)
-                                        adNative.status = StatusAd.AD_LOAD_FAIL
-                                    }
-                                }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
-                                runCatching {
-                                    adLoader.loadAd(getAdRequest())
-                                }
+                val adLoader: AdLoader = AdLoader.Builder(context, adNative.idNativeMedium).forNativeAd {
+                    adNative.nativeAdMedium = it
+                    adNative.status = StatusAd.AD_LOADED
+                }.withAdListener(object : AdListener() {
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                        super.onAdFailedToLoad(adError)
+
+                        val adLoader: AdLoader = AdLoader.Builder(context, adNative.idNative).forNativeAd {
+                            adNative.nativeAd = it
+                            adNative.status = StatusAd.AD_LOADED
+                        }.withAdListener(object : AdListener() {
+                            override fun onAdFailedToLoad(adError: LoadAdError) {
+                                super.onAdFailedToLoad(adError)
+                                adNative.status = StatusAd.AD_LOAD_FAIL
                             }
+                        }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
+                        runCatching {
+                            adLoader.loadAd(getAdRequest())
                         }
-                    }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
-                    runCatching {
-                        adLoader.loadAd(getAdRequest())
                     }
+                }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
+                runCatching {
+                    adLoader.loadAd(getAdRequest())
                 }
 
             }
         }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
 
         runCatching {
-            CoroutineScope(Dispatchers.IO).launch {
-                adLoaderHighFloor.loadAd(getAdRequest())
-            }
+            adLoaderHighFloor.loadAd(getAdRequest())
         }
 
     }
@@ -1250,24 +1242,22 @@ object AdmobUtil {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 super.onAdFailedToLoad(adError)
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    val adLoader: AdLoader = AdLoader.Builder(activity, mIdNative).forNativeAd {
-                        adNative.nativeAd = it
-                        adNative.status = StatusAd.AD_LOADED
-                        if (shimmerFrameLayout != null) {
-                            shimmerFrameLayout!!.stopShimmer()
-                        }
-                        showNativeHighFloor(activity, viewGroup, adNative, layout, nativeAdCallback)
-                    }.withAdListener(object : AdListener() {
-                        override fun onAdFailedToLoad(adError: LoadAdError) {
-                            super.onAdFailedToLoad(adError)
-                            adNative.status = StatusAd.AD_LOAD_FAIL
-                            viewGroup.gone()
-                        }
-                    }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
-                    runCatching {
-                        adLoader.loadAd(getAdRequest())
+                val adLoader: AdLoader = AdLoader.Builder(activity, mIdNative).forNativeAd {
+                    adNative.nativeAd = it
+                    adNative.status = StatusAd.AD_LOADED
+                    if (shimmerFrameLayout != null) {
+                        shimmerFrameLayout!!.stopShimmer()
                     }
+                    showNativeHighFloor(activity, viewGroup, adNative, layout, nativeAdCallback)
+                }.withAdListener(object : AdListener() {
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                        super.onAdFailedToLoad(adError)
+                        adNative.status = StatusAd.AD_LOAD_FAIL
+                        viewGroup.gone()
+                    }
+                }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
+                runCatching {
+                    adLoader.loadAd(getAdRequest())
                 }
 
             }
@@ -1275,9 +1265,8 @@ object AdmobUtil {
         }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
 
         runCatching {
-            CoroutineScope(Dispatchers.IO).launch {
-                adLoaderHighFloor.loadAd(getAdRequest())
-            }
+            adLoaderHighFloor.loadAd(getAdRequest())
+
         }
     }
 
@@ -1363,50 +1352,48 @@ object AdmobUtil {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 super.onAdFailedToLoad(adError)
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    val adLoader: AdLoader = AdLoader.Builder(activity, mIdNative).forNativeAd {
-                        adNative.nativeAd = it
-                        adNative.status = StatusAd.AD_LOADED
-                        if (shimmerFrameLayout != null) {
-                            shimmerFrameLayout!!.stopShimmer()
-                        }
-                        nativeAdCallback.onNativeAdLoaded()
-
-                        val adViewCollap = activity.layoutInflater.inflate(layoutCollap, null) as NativeAdView
-                        adViewCollap.tag = tag
-                        populateNativeAdViewCollap(it, adViewCollap, GoogleENative.UNIFIED_MEDIUM, anchor) {
-                            runCatching { //* On icon collapse clicked
-                                decorView?.removeView(adViewCollap)
-                                if (layoutSmall == null) {
-                                    NativeHelper.reConstraintNativeCollapView(adViewCollap)
-                                    viewGroup.addView(adViewCollap)
-                                }
-                            }
-                        }
-                        runCatching {
-                            viewGroup.removeView(tagView)
-                            val layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-                                gravity = if (anchor == "top") Gravity.TOP else Gravity.BOTTOM
-                            }
-                            decorView?.addView(adViewCollap, layoutParams)
-                            if (layoutSmall != null) {
-                                val adViewSmall = activity.layoutInflater.inflate(layoutSmall, null) as NativeAdView
-                                populateNativeAdView(it, adViewSmall, GoogleENative.UNIFIED_SMALL)
-                                viewGroup.addView(adViewSmall)
-                            }
-                        }
-
-                    }.withAdListener(object : AdListener() {
-                        override fun onAdFailedToLoad(adError: LoadAdError) {
-                            super.onAdFailedToLoad(adError)
-                            adNative.status = StatusAd.AD_LOAD_FAIL
-                            viewGroup.gone()
-                            nativeAdCallback.onAdFail(adError.message)
-                        }
-                    }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
-                    runCatching {
-                        adLoader.loadAd(getAdRequest())
+                val adLoader: AdLoader = AdLoader.Builder(activity, mIdNative).forNativeAd {
+                    adNative.nativeAd = it
+                    adNative.status = StatusAd.AD_LOADED
+                    if (shimmerFrameLayout != null) {
+                        shimmerFrameLayout!!.stopShimmer()
                     }
+                    nativeAdCallback.onNativeAdLoaded()
+
+                    val adViewCollap = activity.layoutInflater.inflate(layoutCollap, null) as NativeAdView
+                    adViewCollap.tag = tag
+                    populateNativeAdViewCollap(it, adViewCollap, GoogleENative.UNIFIED_MEDIUM, anchor) {
+                        runCatching { //* On icon collapse clicked
+                            decorView?.removeView(adViewCollap)
+                            if (layoutSmall == null) {
+                                NativeHelper.reConstraintNativeCollapView(adViewCollap)
+                                viewGroup.addView(adViewCollap)
+                            }
+                        }
+                    }
+                    runCatching {
+                        viewGroup.removeView(tagView)
+                        val layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+                            gravity = if (anchor == "top") Gravity.TOP else Gravity.BOTTOM
+                        }
+                        decorView?.addView(adViewCollap, layoutParams)
+                        if (layoutSmall != null) {
+                            val adViewSmall = activity.layoutInflater.inflate(layoutSmall, null) as NativeAdView
+                            populateNativeAdView(it, adViewSmall, GoogleENative.UNIFIED_SMALL)
+                            viewGroup.addView(adViewSmall)
+                        }
+                    }
+
+                }.withAdListener(object : AdListener() {
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                        super.onAdFailedToLoad(adError)
+                        adNative.status = StatusAd.AD_LOAD_FAIL
+                        viewGroup.gone()
+                        nativeAdCallback.onAdFail(adError.message)
+                    }
+                }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
+                runCatching {
+                    adLoader.loadAd(getAdRequest())
                 }
 
             }
@@ -1414,9 +1401,7 @@ object AdmobUtil {
         }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
 
         runCatching {
-            CoroutineScope(Dispatchers.IO).launch {
-                adLoaderHighFloor.loadAd(getAdRequest())
-            }
+            adLoaderHighFloor.loadAd(getAdRequest())
         }
     }
 
