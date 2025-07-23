@@ -984,12 +984,10 @@ object AdmobUtil {
         if (!isShowAds || !isNetworkConnected(context)) {
             return
         }
-        var mIdHighFloor = adInter.idInterHighFloor
-        if (isTesting) {
-            mIdHighFloor = context.getString(R.string.test_ads_admob_inter_id)
-        }
+        val mIdTest = context.getString(R.string.test_ads_admob_inter_id)
+
         adInter.status = StatusAd.AD_LOADING
-        InterstitialAd.load(context, mIdHighFloor, getAdRequest(), object : InterstitialAdLoadCallback() {
+        InterstitialAd.load(context, if (isTesting) mIdTest else adInter.idInterHighFloor, getAdRequest(), object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 super.onAdLoaded(interstitialAd)
                 adInter.interstitialAdHighFloor = interstitialAd
@@ -1000,7 +998,7 @@ object AdmobUtil {
                 super.onAdFailedToLoad(p0)
                 adInter.status = StatusAd.AD_LOADING
 
-                InterstitialAd.load(context, adInter.idInterMedium, getAdRequest(), object : InterstitialAdLoadCallback() {
+                InterstitialAd.load(context, if (isTesting) mIdTest else adInter.idInterMedium, getAdRequest(), object : InterstitialAdLoadCallback() {
                     override fun onAdLoaded(interstitialAd: InterstitialAd) {
                         super.onAdLoaded(interstitialAd)
                         adInter.interstitialAdMedium = interstitialAd
@@ -1011,7 +1009,7 @@ object AdmobUtil {
                         super.onAdFailedToLoad(p0)
                         adInter.status = StatusAd.AD_LOADING
 
-                        InterstitialAd.load(context, adInter.idInter, getAdRequest(), object : InterstitialAdLoadCallback() {
+                        InterstitialAd.load(context, if (isTesting) mIdTest else adInter.idInter, getAdRequest(), object : InterstitialAdLoadCallback() {
                             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                                 super.onAdLoaded(interstitialAd)
                                 adInter.interstitialAd = interstitialAd
@@ -1118,26 +1116,24 @@ object AdmobUtil {
             adNative.status = StatusAd.AD_LOAD_FAIL
             return
         }
-        var mIdNativeHighFloor = adNative.idNativeHighFloor
-        if (isTesting) {
-            mIdNativeHighFloor = context.getString(R.string.test_ads_admob_native_id)
-        }
+        val mIdNativeTest = context.getString(R.string.test_ads_admob_native_id)
+
         adNative.status = StatusAd.AD_LOADING
-        val adLoaderHighFloor: AdLoader = AdLoader.Builder(context, mIdNativeHighFloor).forNativeAd {
+        val adLoaderHighFloor: AdLoader = AdLoader.Builder(context, if (isTesting) mIdNativeTest else adNative.idNativeHighFloor).forNativeAd {
             adNative.nativeAdHighFloor = it
             adNative.status = StatusAd.AD_LOADED
         }.withAdListener(object : AdListener() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 super.onAdFailedToLoad(adError)
 
-                val adLoader: AdLoader = AdLoader.Builder(context, adNative.idNativeMedium).forNativeAd {
+                val adLoader: AdLoader = AdLoader.Builder(context, if (isTesting) mIdNativeTest else adNative.idNativeMedium).forNativeAd {
                     adNative.nativeAdMedium = it
                     adNative.status = StatusAd.AD_LOADED
                 }.withAdListener(object : AdListener() {
                     override fun onAdFailedToLoad(adError: LoadAdError) {
                         super.onAdFailedToLoad(adError)
 
-                        val adLoader: AdLoader = AdLoader.Builder(context, adNative.idNative).forNativeAd {
+                        val adLoader: AdLoader = AdLoader.Builder(context,  if (isTesting) mIdNativeTest else adNative.idNative).forNativeAd {
                             adNative.nativeAd = it
                             adNative.status = StatusAd.AD_LOADED
                         }.withAdListener(object : AdListener() {
