@@ -58,6 +58,9 @@ import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Date
 
 object AdmobUtil {
@@ -998,31 +1001,39 @@ object AdmobUtil {
                 super.onAdFailedToLoad(p0)
                 adInter.status = StatusAd.AD_LOADING
 
-                InterstitialAd.load(context, if (isTesting) mIdTest else adInter.idInterMedium, getAdRequest(), object : InterstitialAdLoadCallback() {
-                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                        super.onAdLoaded(interstitialAd)
-                        adInter.interstitialAdMedium = interstitialAd
-                        adInter.status = StatusAd.AD_LOADED
-                    }
+                InterstitialAd.load(
+                    context,
+                    if (isTesting) mIdTest else adInter.idInterMedium,
+                    getAdRequest(),
+                    object : InterstitialAdLoadCallback() {
+                        override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                            super.onAdLoaded(interstitialAd)
+                            adInter.interstitialAdMedium = interstitialAd
+                            adInter.status = StatusAd.AD_LOADED
+                        }
 
-                    override fun onAdFailedToLoad(p0: LoadAdError) {
-                        super.onAdFailedToLoad(p0)
-                        adInter.status = StatusAd.AD_LOADING
+                        override fun onAdFailedToLoad(p0: LoadAdError) {
+                            super.onAdFailedToLoad(p0)
+                            adInter.status = StatusAd.AD_LOADING
 
-                        InterstitialAd.load(context, if (isTesting) mIdTest else adInter.idInter, getAdRequest(), object : InterstitialAdLoadCallback() {
-                            override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                                super.onAdLoaded(interstitialAd)
-                                adInter.interstitialAd = interstitialAd
-                                adInter.status = StatusAd.AD_LOADED
-                            }
+                            InterstitialAd.load(
+                                context,
+                                if (isTesting) mIdTest else adInter.idInter,
+                                getAdRequest(),
+                                object : InterstitialAdLoadCallback() {
+                                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                                        super.onAdLoaded(interstitialAd)
+                                        adInter.interstitialAd = interstitialAd
+                                        adInter.status = StatusAd.AD_LOADED
+                                    }
 
-                            override fun onAdFailedToLoad(p0: LoadAdError) {
-                                super.onAdFailedToLoad(p0)
-                                adInter.status = StatusAd.AD_LOAD_FAIL
-                            }
-                        })
-                    }
-                })
+                                    override fun onAdFailedToLoad(p0: LoadAdError) {
+                                        super.onAdFailedToLoad(p0)
+                                        adInter.status = StatusAd.AD_LOAD_FAIL
+                                    }
+                                })
+                        }
+                    })
 
             }
         })
@@ -1063,8 +1074,6 @@ object AdmobUtil {
                     isAdShowing = false
                     callBack.onEventClickAdClosed()
                     dismissAdDialog()
-                    adInter.interstitialAdHighFloor = null
-                    adInter.interstitialAd = null
                 }
 
                 override fun onAdFailedToShowFullScreenContent(adError: AdError) {
@@ -1081,6 +1090,10 @@ object AdmobUtil {
                     callBack.onAdShowed()
                     try {
                         interstitialAd.setOnPaidEventListener(callBack::onPaid)
+                        adInter.interstitialAdHighFloor = null
+                        adInter.interstitialAdMedium = null
+                        adInter.interstitialAd = null
+                        loadInterHighFloor(activity, adInter)
                     } catch (e: Exception) {
                     }
                     dismissAdDialog()
@@ -1126,14 +1139,14 @@ object AdmobUtil {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 super.onAdFailedToLoad(adError)
 
-                val adLoader: AdLoader = AdLoader.Builder(context, if (isTesting) mIdNativeTest else adNative.idNativeMedium).forNativeAd {
+                val adLoaderMedium: AdLoader = AdLoader.Builder(context, if (isTesting) mIdNativeTest else adNative.idNativeMedium).forNativeAd {
                     adNative.nativeAdMedium = it
                     adNative.status = StatusAd.AD_LOADED
                 }.withAdListener(object : AdListener() {
                     override fun onAdFailedToLoad(adError: LoadAdError) {
                         super.onAdFailedToLoad(adError)
 
-                        val adLoader: AdLoader = AdLoader.Builder(context,  if (isTesting) mIdNativeTest else adNative.idNative).forNativeAd {
+                        val adLoader: AdLoader = AdLoader.Builder(context, if (isTesting) mIdNativeTest else adNative.idNative).forNativeAd {
                             adNative.nativeAd = it
                             adNative.status = StatusAd.AD_LOADED
                         }.withAdListener(object : AdListener() {
@@ -1143,19 +1156,25 @@ object AdmobUtil {
                             }
                         }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
                         runCatching {
-                            adLoader.loadAd(getAdRequest())
+                            CoroutineScope(Dispatchers.IO).launch {
+                                adLoader.loadAd(getAdRequest())
+                            }
                         }
                     }
                 }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
                 runCatching {
-                    adLoader.loadAd(getAdRequest())
+                    CoroutineScope(Dispatchers.IO).launch {
+                        adLoaderMedium.loadAd(getAdRequest())
+                    }
                 }
 
             }
         }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
 
         runCatching {
-            adLoaderHighFloor.loadAd(getAdRequest())
+            CoroutineScope(Dispatchers.IO).launch {
+                adLoaderHighFloor.loadAd(getAdRequest())
+            }
         }
 
     }
@@ -1171,7 +1190,7 @@ object AdmobUtil {
             viewGroup.removeAllViews()
         }
 
-        var nativeAd = adNative.nativeAdHighFloor
+        val nativeAd = adNative.nativeAdHighFloor
             ?: adNative.nativeAdMedium
             ?: adNative.nativeAd
 
@@ -1185,7 +1204,9 @@ object AdmobUtil {
             nativeAdCallback.onNativeAdLoaded()
 
             adNative.nativeAdHighFloor = null
+            adNative.nativeAdMedium = null
             adNative.nativeAd = null
+            loadNativeHighFloor(activity, adNative)
         } else {
             nativeAdCallback.onAdFail("No ad")
         }

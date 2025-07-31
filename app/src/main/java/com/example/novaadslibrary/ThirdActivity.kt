@@ -10,13 +10,8 @@ import com.ads.library.utils.AdmobUtil
 class ThirdActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_third)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
 
     }
 
@@ -29,9 +24,6 @@ class ThirdActivity : AppCompatActivity() {
             remoteCount = "1",
             R.layout.ad_template_fullscreen, true
         ) {
-            AdmobUtil.loadInterHighFloor(this@ThirdActivity, AdsManager.adInter)
-
-            AdmobUtil.loadNativeHighFloor(this@ThirdActivity, AdsManager.adNative)
             super.onBackPressed()
         }
 

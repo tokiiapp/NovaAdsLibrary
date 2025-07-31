@@ -58,7 +58,6 @@ class SecondActivity : AppCompatActivity() {
                 }
 
                 override fun onEventClickAdClosed() {
-                    AdmobUtil.loadInterHighFloor(this@SecondActivity, AdsManager.adInter)
                 }
 
                 override fun onAdShowed() {
@@ -89,9 +88,6 @@ class SecondActivity : AppCompatActivity() {
                 remoteCount = "1",
                 R.layout.ad_template_fullscreen, true
             ) {
-                AdmobUtil.loadInterHighFloor(this@SecondActivity, AdsManager.adInter)
-
-                AdmobUtil.loadNativeHighFloor(this@SecondActivity, AdsManager.adNative)
                 startActivity(Intent(this, ThirdActivity::class.java))
             }
         }
