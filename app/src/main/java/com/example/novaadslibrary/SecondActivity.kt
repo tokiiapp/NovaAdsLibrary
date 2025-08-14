@@ -10,6 +10,8 @@ import com.ads.library.callback.NativeAdCallback
 import com.ads.library.callback.RewardAdCallback
 import com.ads.library.enumads.CollapsibleBanner
 import com.ads.library.utils.AdmobUtil
+import com.ads.library.utils.gone
+import com.ads.library.utils.visible
 import com.example.novaadslibrary.databinding.ActivitySecondBinding
 import com.google.android.gms.ads.AdValue
 import com.rate.ratedialog.RatingDialog
@@ -20,7 +22,6 @@ class SecondActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySecondBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         binding.btnShowNative.setOnClickListener {
             AdmobUtil.showNativeHighFloorByRemoteConfig(this, "1",binding.flNative, AdsManager.adNative, R.layout.ad_unified_medium, object : NativeAdCallback {
                 override fun onNativeAdLoaded() {
@@ -37,7 +38,27 @@ class SecondActivity : AppCompatActivity() {
 
             })
         }
+        binding.btnShowNativeFull.setOnClickListener {
+            binding.flContainer.visible()
+            AdmobUtil.showNativeHighFloorByRemoteConfig(this, "1",binding.flNativeFull, AdsManager.adNative, R.layout.ad_template_fullscreen, object : NativeAdCallback {
+                override fun onNativeAdLoaded() {
 
+                }
+
+                override fun onAdFail(error: String) {
+
+                }
+
+                override fun onAdPaid(adValue: AdValue?) {
+
+                }
+
+            })
+        }
+
+        binding.ivClose.setOnClickListener {
+            binding.flContainer.gone()
+        }
         binding.btnLoadShowNativeCollap.setOnClickListener {
             AdmobUtil.loadAndShowBannerByRemoteConfig(
                 this, "", AdsManager.adNative, "2", binding.flBanner, CollapsibleBanner.BOTTOM, R.layout.ad_template_collap,

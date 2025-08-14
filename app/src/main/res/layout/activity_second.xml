@@ -28,6 +28,12 @@
                 android:text="show Native" />
 
             <Button
+                android:id="@+id/btnShowNativeFull"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="show Native Full Screen" />
+
+            <Button
                 android:id="@+id/btnLoadShowNativeCollap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -62,6 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="show Rate" />
+
             <FrameLayout
                 android:id="@+id/flNative"
                 android:layout_width="match_parent"
@@ -104,13 +111,11 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clNativeFull"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
+    <FrameLayout
+        android:id="@+id/fl_container"
         android:visibility="gone"
-        tools:visibility="gone">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/flNativeFull"
@@ -118,30 +123,11 @@
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-        <ImageView
-            android:id="@+id/ad_close"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_close"
+            android:padding="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="32dp"
-            android:src="@drawable/ic_ad_close"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white" />
-
-        <TextView
-            android:id="@+id/ad_timer"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/bg_ads"
-            android:gravity="center"
-            android:text="5"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/ad_close"
-            app:layout_constraintEnd_toEndOf="@+id/ad_close"
-            app:layout_constraintStart_toStartOf="@+id/ad_close"
-            app:layout_constraintTop_toTopOf="@+id/ad_close" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+            android:src="@drawable/ic_ad_close" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

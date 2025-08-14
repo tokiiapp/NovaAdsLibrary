@@ -46,7 +46,7 @@ class NativeHelper {
                 adView.starRatingView = it
             }
             if (nativeAd.mediaContent != null) {
-                if (size == GoogleENative.UNIFIED_MEDIUM) {
+                if (size == GoogleENative.UNIFIED_MEDIUM || size == GoogleENative.UNIFIED_FULLSCREEN) {
                     adView.mediaView!!.visible()
                     adView.mediaView!!.mediaContent = nativeAd.mediaContent!!
                 } else {

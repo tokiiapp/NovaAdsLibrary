@@ -1,5 +1,6 @@
 package com.ads.library.utils
 
+import android.R.attr.tag
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -486,11 +487,26 @@ object AdmobUtil {
      * - 2 : show Inter
      */
     @JvmStatic
-    fun loadAndShowAdSplash(activity: Activity, remoteValue: String, adAoaSplash: AdAoaSplash, adInter: AdInter, callBack: AppOpenSplashCallback) {
+    fun loadAndShowAdSplash(
+        activity: Activity,
+        remoteValue: String,
+        adAoaSplash: AdAoaSplash,
+        adInter: AdInter,
+        adNative: AdNative,
+        layout: Int,
+        callBack: AppOpenSplashCallback
+    ) {
         if (!isShowAds || !isNetworkConnected(activity)) {
             callBack.onAdFail("No internet")
             return
         }
+        val tag = "native_full_view"
+        var decorView: ViewGroup? = null
+        runCatching {
+            decorView = activity.window.decorView as ViewGroup
+            decorView.findViewWithTag<View>(tag)?.let { decorView.removeView(it) }
+        }
+
         when (remoteValue) {
             "0" -> {
                 callBack.onAdFail("No show Ad")
@@ -520,6 +536,81 @@ object AdmobUtil {
 
                     override fun onEventClickAdClosed() {
                         callBack.onAdClosed()
+                    }
+
+                    override fun onAdShowed() {
+
+                    }
+
+                    override fun onAdLoaded() {
+
+                    }
+
+                    override fun onAdFail(error: String) {
+                        callBack.onAdFail(error)
+                    }
+
+                    override fun onPaid(adValue: AdValue?) {
+                        callBack.onPaid(adValue)
+                    }
+
+                }, false)
+            }
+
+            "3" -> {
+                destroyBannerCollapView()
+                val container = activity.layoutInflater.inflate(R.layout.ad_native_inter_container, null, false)
+                val viewGroup = container.findViewById<FrameLayout>(R.id.viewGroup)
+                val btnClose = container.findViewById<View>(R.id.ad_close)
+                val tvTimer = container.findViewById<TextView>(R.id.ad_timer)
+
+                try {
+                    container.tag = tag
+                    decorView!!.addView(container)
+                } catch (e: Exception) {
+
+                    callBack.onAdClosed()
+                    return
+                }
+                container.visible()
+                tvTimer.gone()
+                btnClose.invisible()
+                btnClose.setOnClickListener {
+                    container.gone()
+                    runCatching { decorView?.removeView(container) }
+                    callBack.onAdClosed()
+                    isAdShowing = false
+                }
+
+                loadAndShowAdInterstitialMulti(activity, adInter, object : InterCallBack {
+                    override fun onStartAction() {
+                        btnClose.visible()
+                        loadAndShowNativeHighFloor(
+                            activity,
+                            viewGroup,
+                            adNative,
+                            GoogleENative.UNIFIED_FULLSCREEN,
+                            layout,
+                            object : NativeAdCallback {
+                                override fun onNativeAdLoaded() {
+                                    isAdShowing = true
+                                    btnClose.visible()
+                                }
+
+                                override fun onAdFail(error: String) {
+                                    container.gone()
+                                    runCatching { decorView?.removeView(container) }
+                                    callBack.onAdClosed()
+                                }
+
+                                override fun onAdPaid(adValue: AdValue?) {
+
+                                }
+                            })
+                    }
+
+                    override fun onEventClickAdClosed() {
+
                     }
 
                     override fun onAdShowed() {
@@ -1237,9 +1328,11 @@ object AdmobUtil {
 
         adNative.status = StatusAd.AD_LOADING
         adNative.nativeSize = size
-        val tagView: View = if (size === GoogleENative.UNIFIED_MEDIUM) {
+        val tagView: View = if (size === GoogleENative.UNIFIED_FULLSCREEN) {
+            activity.layoutInflater.inflate(R.layout.layoutnative_loading_fullscreen, null, false)
+        } else if (size === GoogleENative.UNIFIED_MEDIUM) {
             activity.layoutInflater.inflate(R.layout.layoutnative_loading_medium, null, false)
-        } else {
+        }else {
             activity.layoutInflater.inflate(R.layout.layoutnative_loading_small, null, false)
         }
         viewGroup.addView(tagView, 0)
