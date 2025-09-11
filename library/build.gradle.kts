@@ -37,7 +37,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation ("com.google.android.gms:play-services-ads:23.1.0")
+    implementation ("com.google.android.gms:play-services-ads:24.6.0")
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation ("androidx.lifecycle:lifecycle-runtime:2.2.0")
     annotationProcessor ("androidx.lifecycle:lifecycle-compiler:2.2.0")

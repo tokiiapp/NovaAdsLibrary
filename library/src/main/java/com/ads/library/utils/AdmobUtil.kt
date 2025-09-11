@@ -180,12 +180,13 @@ object AdmobUtil {
         viewGroup: ViewGroup,
         adNative: AdNative,
         layout: Int,
-        nativeAdCallback: NativeAdCallback
+        nativeAdCallback: NativeAdCallback,
+        isReload: Boolean = true
     ) {
         if (remoteValue == "0") {
             viewGroup.gone()
         } else {
-            showNativeHighFloor(activity, viewGroup, adNative, layout, nativeAdCallback)
+            showNativeHighFloor(activity, viewGroup, adNative, layout, nativeAdCallback, isReload)
         }
     }
 
@@ -1272,7 +1273,13 @@ object AdmobUtil {
 
     //showNativeHighFloor
     @JvmStatic
-    private fun showNativeHighFloor(activity: Activity, viewGroup: ViewGroup, adNative: AdNative, layout: Int, nativeAdCallback: NativeAdCallback) {
+    private fun showNativeHighFloor(
+        activity: Activity,
+        viewGroup: ViewGroup,
+        adNative: AdNative,
+        layout: Int,
+        nativeAdCallback: NativeAdCallback, isReload: Boolean = true
+    ) {
         if (!isShowAds || !isNetworkConnected(activity)) {
             viewGroup.gone()
             return
@@ -1297,7 +1304,9 @@ object AdmobUtil {
             adNative.nativeAdHighFloor = null
             adNative.nativeAdMedium = null
             adNative.nativeAd = null
-            loadNativeHighFloor(activity, adNative)
+            if (isReload) {
+                loadNativeHighFloor(activity, adNative)
+            }
         } else {
             nativeAdCallback.onAdFail("No ad")
         }
@@ -1332,7 +1341,7 @@ object AdmobUtil {
             activity.layoutInflater.inflate(R.layout.layoutnative_loading_fullscreen, null, false)
         } else if (size === GoogleENative.UNIFIED_MEDIUM) {
             activity.layoutInflater.inflate(R.layout.layoutnative_loading_medium, null, false)
-        }else {
+        } else {
             activity.layoutInflater.inflate(R.layout.layoutnative_loading_small, null, false)
         }
         viewGroup.addView(tagView, 0)

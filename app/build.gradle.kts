@@ -51,6 +51,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(project(":library"))
     implementation(project(":ratedialog"))
-    implementation ("com.google.android.gms:play-services-ads:24.4.0")
+    implementation ("com.google.android.gms:play-services-ads:24.6.0")
     implementation("androidx.compose.runtime:runtime:1.8.0")
 }
