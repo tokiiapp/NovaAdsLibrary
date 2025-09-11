@@ -1301,10 +1301,10 @@ object AdmobUtil {
             }
             nativeAdCallback.onNativeAdLoaded()
 
-            adNative.nativeAdHighFloor = null
-            adNative.nativeAdMedium = null
-            adNative.nativeAd = null
             if (isReload) {
+                adNative.nativeAdHighFloor = null
+                adNative.nativeAdMedium = null
+                adNative.nativeAd = null
                 loadNativeHighFloor(activity, adNative)
             }
         } else {
