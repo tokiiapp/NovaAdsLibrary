@@ -1205,11 +1205,14 @@ object AdmobUtil {
                 isAdShowing = false
                 dismissAdDialog()
                 callBack.onAdFail("onResume")
+                handler.removeCallbacksAndMessages(null)
             }
         } else {
             isAdShowing = false
             dismissAdDialog()
             callBack.onAdFail("No ad")
+            handler.removeCallbacksAndMessages(null)
+            loadInterHighFloor(activity, adInter)
             return
         }
     }
