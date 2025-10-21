@@ -1,6 +1,5 @@
 package com.ads.library.utils
 
-import android.R.attr.tag
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -59,9 +58,6 @@ import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.Date
 
 object AdmobUtil {
@@ -1251,25 +1247,19 @@ object AdmobUtil {
                             }
                         }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
                         runCatching {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                adLoader.loadAd(getAdRequest())
-                            }
+                            adLoader.loadAd(getAdRequest())
                         }
                     }
                 }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
                 runCatching {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        adLoaderMedium.loadAd(getAdRequest())
-                    }
+                    adLoaderMedium.loadAd(getAdRequest())
                 }
 
             }
         }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
 
         runCatching {
-            CoroutineScope(Dispatchers.IO).launch {
-                adLoaderHighFloor.loadAd(getAdRequest())
-            }
+            adLoaderHighFloor.loadAd(getAdRequest())
         }
 
     }
