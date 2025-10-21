@@ -1307,7 +1307,7 @@ object AdmobUtil {
     }
 
     @JvmStatic
-    private fun loadAndShowNativeHighFloor(
+    fun loadAndShowNativeHighFloor(
         activity: Activity,
         viewGroup: ViewGroup,
         adNative: AdNative,
